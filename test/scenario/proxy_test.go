@@ -81,8 +81,8 @@ NYpAJoagHIeNLGo4aJFwiVsZ
 `
 
 func init() {
-	ioutil.WriteFile("server.crt", []byte(cert), 0777)
-	ioutil.WriteFile("server.key", []byte(key), 0777)
+	ioutil.WriteFile("server.crt", []byte(cert), 0o777)
+	ioutil.WriteFile("server.key", []byte(key), 0o777)
 }
 
 func CheckClientServer(clientData, serverData string, socksPort int) (ok bool) {
@@ -96,6 +96,7 @@ func CheckClientServer(clientData, serverData string, socksPort int) (ok bool) {
 
 	time.Sleep(time.Second * 2)
 	dialer, err := netproxy.SOCKS5("tcp", fmt.Sprintf("127.0.0.1:%d", socksPort), nil, netproxy.Direct)
+	common.Must(err)
 
 	ok = true
 	const num = 100
@@ -457,7 +458,7 @@ api:
 	time.Sleep(time.Second * 3)
 	client.Close()
 	time.Sleep(time.Second * 3)
-	//http.ListenAndServe("localhost:6060", nil)
+	// http.ListenAndServe("localhost:6060", nil)
 }
 
 func SingleThreadBenchmark(clientData, serverData string, socksPort int) {
@@ -471,6 +472,7 @@ func SingleThreadBenchmark(clientData, serverData string, socksPort int) {
 
 	time.Sleep(time.Second * 2)
 	dialer, err := netproxy.SOCKS5("tcp", fmt.Sprintf("127.0.0.1:%d", socksPort), nil, netproxy.Direct)
+	common.Must(err)
 
 	const num = 100
 	wg := sync.WaitGroup{}
@@ -493,7 +495,6 @@ func SingleThreadBenchmark(clientData, serverData string, socksPort int) {
 	}
 	client.Close()
 	server.Close()
-	return
 }
 
 func BenchmarkClientServer(b *testing.B) {

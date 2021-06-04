@@ -1,13 +1,14 @@
 on:
   push:
     branches:
-      - "master"
+      - master
     paths-ignore:
       - '**.md'
-      - 'docs'
+      - 'docs/**'
 name: docker-nightly-build
 jobs:
   build:
+    if: github.repository == 'p4gefau1t/trojan-go'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code

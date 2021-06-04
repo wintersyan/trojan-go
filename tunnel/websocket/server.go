@@ -66,7 +66,6 @@ func (s *Server) AcceptConn(tunnel.Tunnel) (tunnel.Conn, error) {
 	defer rewindConn.StopBuffering()
 	rw := bufio.NewReadWriter(bufio.NewReader(rewindConn), bufio.NewWriter(rewindConn))
 	req, err := http.ReadRequest(rw.Reader)
-
 	if err != nil {
 		log.Debug("invalid http request")
 		rewindConn.Rewind()
@@ -93,6 +92,9 @@ func (s *Server) AcceptConn(tunnel.Tunnel) (tunnel.Conn, error) {
 	url := "wss://" + s.hostname + s.path
 	origin := "https://" + s.hostname
 	wsConfig, err := websocket.NewConfig(url, origin)
+	if err != nil {
+		return nil, common.NewError("failed to create websocket config").Base(err)
+	}
 	var wsConn *websocket.Conn
 	ctx, cancel := context.WithCancel(s.ctx)
 
